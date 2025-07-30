@@ -845,7 +845,7 @@ if __name__ == "__main__":
         training_args = TrainingArguments(
             output_dir=output_dir,
             do_train=True,
-            do_eval=False,
+            do_eval=True,
             seed=seed,
             num_train_epochs=2,
             per_device_train_batch_size=1,
