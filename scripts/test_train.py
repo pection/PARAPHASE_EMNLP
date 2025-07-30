@@ -676,6 +676,7 @@ def train_model(model_args, data_args, training_args):
     #     unwrap_model = accelerator.unwrap_model(model)
     # else:
     #     unwrap_model = accelerator.unwrap_model(model)
+    unwrap_model = model  # or just remove the block entirely if not needed
 
     results = {}
     if training_args.do_eval:
