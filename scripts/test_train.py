@@ -245,7 +245,7 @@ class TrainingArguments(HFTrainingArguments):
     )
 def train_model(model_args, data_args, training_args):
 
-    accelerator = Accelerator()
+    # accelerator = Accelerator()
     og_start_time = time.time()
 
     parser = HfArgumentParser(
