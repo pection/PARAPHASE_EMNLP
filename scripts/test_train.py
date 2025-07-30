@@ -857,4 +857,4 @@ if __name__ == "__main__":
         )
 
         print(f"Running: {run_name}")
-        main(model_args, data_args, training_args)
+        # main(model_args, data_args, training_args)
