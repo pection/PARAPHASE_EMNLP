@@ -740,7 +740,6 @@ def train_model(model_args, data_args, training_args):
     if data_args.test_predict and data_args.task_name in {"esnli", "sbic"}:
         logger.info("*** Predict on test set***")
         print(f"************************ MODEL WILL EVALUATE TEST ************************")
-
         results = evaluate(
                             save_path,
                             original_data_splits['test'],
