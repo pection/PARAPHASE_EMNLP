@@ -778,6 +778,9 @@ def train_model(model_args, data_args, training_args):
             "eval_results_lm.txt",
         )
     # if data_args.generations_filepath or trainer.is_world_process_zero():
+    print(f"KEYS = = == =")
+    for key in results.keys():
+        print(key)
     if True:
         with open(output_eval_file, "a+") as writer:
             for key in results.keys():
