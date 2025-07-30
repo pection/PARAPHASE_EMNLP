@@ -143,7 +143,6 @@ class DebugTrainer(Trainer):
             predicted_ids = torch.argmax(logits, dim=-1)
             decoded_preds = self.tokenizer.batch_decode(predicted_ids, skip_special_tokens=True)
 
-            # print(f"\nHigh Loss Example {loss}")
 
             json_file_name =os.path.join(self.json_dir,"high_loss_samples.jsonl")
             with open(json_file_name, "a") as f:
@@ -154,10 +153,6 @@ class DebugTrainer(Trainer):
                         "label": decoded_labels[i],
                         "prediction": decoded_preds[i]
                     }) + "\n")
-                    # print(f"Input {i+1}: {decoded_inputs[i]}")
-                    # print(f"Label {i+1}: {decoded_labels[i]}")
-                    # print(f"Pred {i+1}:  {decoded_preds[i]}")
-                    # print("-" * 30)
 
 
         return (loss, outputs) if return_outputs else loss
@@ -847,7 +842,6 @@ if __name__ == "__main__":
             per_device_train_batch_size=1,
             per_device_eval_batch_size=1,
             gradient_accumulation_steps=8,
-            early_stopping_patience=1,
             learning_rate=3e-5,
             warmup_steps=0,
             max_steps=300,
