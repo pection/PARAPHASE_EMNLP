@@ -75,12 +75,12 @@ import pandas as pd
 import jsonlines
 from copy import deepcopy
 from typing import List, Dict
-from accelerate import Accelerator
+# from accelerate import Accelerator
 
 logger = logging.getLogger(__name__)
 transformers.logging.set_verbosity_info()
 import re
-from accelerate import FullyShardedDataParallelPlugin
+# from accelerate import FullyShardedDataParallelPlugin
 from torch.distributed.fsdp.fully_sharded_data_parallel import FullOptimStateDictConfig, FullStateDictConfig
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
@@ -671,11 +671,11 @@ def train_model(model_args, data_args, training_args):
         start_time = time.time()
         train_time = time.time() - start_time
 
-    if trainer.is_fsdp_enabled:
-        trainer.accelerator.state.fsdp_plugin.set_state_dict_type("FULL_STATE_DICT")
-        unwrap_model = accelerator.unwrap_model(model)
-    else:
-        unwrap_model = accelerator.unwrap_model(model)
+    # if trainer.is_fsdp_enabled:
+    #     trainer.accelerator.state.fsdp_plugin.set_state_dict_type("FULL_STATE_DICT")
+    #     unwrap_model = accelerator.unwrap_model(model)
+    # else:
+    #     unwrap_model = accelerator.unwrap_model(model)
 
     results = {}
     if training_args.do_eval:
