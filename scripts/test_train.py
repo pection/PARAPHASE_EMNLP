@@ -29,6 +29,7 @@ from transformers.modeling_outputs import Seq2SeqLMOutput
 from custom_loss_class import SPLINT_T5
 from transformers import TrainingArguments as HFTrainingArguments
 from dataclasses import dataclass, field
+from typing import Optional
 InputDataClass = NewType("InputDataClass", Any)
 from itertools import product
 from transformers import HfArgumentParser
@@ -242,6 +243,10 @@ class TrainingArguments(HFTrainingArguments):
         default=False,
         metadata={"help": "Save model weights after training"}
     )
+@dataclass
+class DataTrainingArguments:
+    data_path: Optional[str] = field(default=None)  
+
 def train_model(model_args, data_args, training_args):
 
     accelerator = Accelerator()
@@ -815,69 +820,104 @@ def train_model(model_args, data_args, training_args):
     )
 
 
-if __name__ == "__main__":
 
-    seeds = [9599]
-    task = "esnli"
-    model_name = "t5-base"
-    io_format = "unifiedqa_snli_mix_what_with_choices_v2"
-    n_shots = 16
-    explanation_sep = " because "
+if __name__ == "__main__":
     project = "PARAPHASE_SPLINT"
     exp_name = "Lora_POC"
+    seeds = [9599]
+    model_name = "t5-base"
+    explanation_sep = " because "
     warmup_step = 0
     learning_rate_variable = 3e-5
     max_step = 10
     eval_steps = 5
-    for seed in seeds:
-        run_name = f"{task}-{seed}-{model_name}-1-300-2-0-3e-05-2-30-350-{explanation_sep.strip()}-{model_name.replace('/','')}{io_format}-{n_shots}".replace(" ", "")
-        output_dir = os.path.join(exp_name, run_name)
-        os.makedirs(output_dir, exist_ok=True)
+    fewshot_eval_size = 350
+    num_train_epochs = 2
+    per_device_train_batch_size = 1
+    format_dict = {
+        'esnli': ['unifiedqa_snli_mix_what_with_choices_v2'],
+        'cos_e': ['unifiedqa_matching'],
+        'ecqa': ['unifiedqa_matching'],
+        'sensemaking': ['unifiedqa_what'],
+        'sbic': ['t5_fewshot_infilling_more_natural']
+    }
 
-        os.environ["WANDB_PROJECT"] = project
-        os.environ["WANDB_NAME"] = run_name
-        os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+    n_shots_dict = {
+        'esnli': [16],
+        'cos_e': [48],
+        'ecqa': [48],
+        'sensemaking': [24],
+        'sbic': [24]
+    }
 
-        model_args = ModelArguments(
-            model_type=model_name,
-            model_class=model_name,
-            tokenizer_name=model_name,
-            pretrained=True,
-            rationale_only=False
-        )
+    data_path_dict = {
+        'esnli': None,
+        'cos_e': None,
+        'ecqa': '../data/ECQA-Dataset',
+        'sensemaking': '../data/SenseMaking/',
+        'sbic': '../data/SBIC/'
+    }
+    for task in ['esnli', 'cos_e', 'ecqa', 'sensemaking']:
+        io_format = format_dict[task][0]
+        n_shots = n_shots_dict[task][0]
+        data_path = data_path_dict[task]
 
-        data_args = DataTrainingArguments(
-            task_name=task,
-            version_name="v1.0",
-            n_shots=n_shots,
-            fewshot_eval_size=350,
-            io_format=io_format,
-            explanation_sep=explanation_sep
-        )
+        for seed in seeds:
+            run_name = (
+                f"{task}-{seed}-{model_name}-1-{max_step}-{num_train_epochs}-"
+                f"{warmup_step}-3e-05-{per_device_train_batch_size}-{eval_steps}-"
+                f"{fewshot_eval_size}-{explanation_sep.strip()}-"
+                f"{model_name.replace('/', '')}{io_format}-{n_shots}"
+            ).replace(" ", "")
 
-        training_args = TrainingArguments(
-            output_dir=output_dir,
-            do_train=True,
-            do_eval=True,
-            seed=seed,
-            num_train_epochs=2,
-            per_device_train_batch_size=1,
-            per_device_eval_batch_size=1,
-            gradient_accumulation_steps=8,
-            learning_rate=learning_rate_variable,
-            warmup_steps=warmup_step,
-            max_steps=max_step,
-            eval_steps=eval_steps,
-            logging_steps=1,
-            logging_first_step=True,
-            save_total_limit=1,
-            save_strategy="steps",
-            lr_scheduler_type="constant",
-            bf16=True,
-            bf16_full_eval=True,
-            save_weight=False,
-            report_to=["all"]
-        )
+            output_dir = os.path.join(exp_name, run_name)
+            os.makedirs(output_dir, exist_ok=True)
 
-        print(f"Running: {run_name}")
-        train_model(model_args, data_args, training_args)
+            os.environ["WANDB_PROJECT"] = project
+            os.environ["WANDB_NAME"] = run_name
+            os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
+            model_args = ModelArguments(
+                model_type=model_name,
+                model_class=model_name,
+                tokenizer_name=model_name,
+                pretrained=True,
+                rationale_only=False
+            )
+
+            data_args = DataTrainingArguments(
+                task_name=task,
+                version_name="v1.0",
+                n_shots=n_shots,
+                fewshot_eval_size=fewshot_eval_size,
+                io_format=io_format,
+                explanation_sep=explanation_sep,
+                data_path=data_path
+            )
+
+            training_args = TrainingArguments(
+                output_dir=output_dir,
+                do_train=True,
+                do_eval=True,
+                seed=seed,
+                num_train_epochs=num_train_epochs,
+                per_device_train_batch_size=per_device_train_batch_size,
+                per_device_eval_batch_size=1,
+                gradient_accumulation_steps=8,
+                learning_rate=learning_rate_variable,
+                warmup_steps=warmup_step,
+                max_steps=max_step,
+                eval_steps=eval_steps,
+                logging_steps=1,
+                logging_first_step=True,
+                save_total_limit=1,
+                save_strategy="steps",
+                lr_scheduler_type="constant",
+                bf16=True,
+                bf16_full_eval=True,
+                save_weight=False,
+                report_to=["all"]
+            )
+
+            print(f"Running: {run_name}")
+            train_model(model_args, data_args, training_args)
