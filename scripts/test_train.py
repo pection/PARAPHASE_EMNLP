@@ -857,8 +857,8 @@ if __name__ == "__main__":
             save_total_limit=1,
             save_strategy="steps",
             lr_scheduler_type="constant",
-            bf16=True,
-            bf16_full_eval=True,
+            bf16=False,
+            bf16_full_eval=False,
             save_weight=False,
             report_to=["all"]
         )
