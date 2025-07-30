@@ -815,7 +815,7 @@ if __name__ == "__main__":
     n_shots = 16
     explanation_sep = " because "
     project = "T5_Large_All"
-    exp_name = "Lora POC"
+    exp_name = "Lora_POC"
     for seed in seeds:
         run_name = f"{task}-{seed}-{model_name}-1-300-2-0-3e-05-2-30-350-{explanation_sep.strip()}-{model_name.replace('/','')}{io_format}-{n_shots}".replace(" ", "")
         output_dir = os.path.join(exp_name, run_name)
