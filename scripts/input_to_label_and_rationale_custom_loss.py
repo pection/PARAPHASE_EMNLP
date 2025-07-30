@@ -25,7 +25,6 @@ https://github.com/huggingface/transformers/blob/master/examples/language-modeli
 
 # This code is based on https://github.com/allenai/label_rationale_association/blob/main/input_to_label_and_rationale.py
 
-import gpt3
 import logging
 import math
 import os
