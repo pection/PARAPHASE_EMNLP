@@ -243,7 +243,7 @@ class TrainingArguments(HFTrainingArguments):
         default=False,
         metadata={"help": "Save model weights after training"}
     )
-def main(model_args, data_args, training_args):
+def train_model(model_args, data_args, training_args):
 
     accelerator = Accelerator()
     og_start_time = time.time()
@@ -853,8 +853,9 @@ if __name__ == "__main__":
             lr_scheduler_type="constant",
             bf16=True,
             bf16_full_eval=True,
-            save_weight=False
+            save_weight=False,
+            report_to=["all"]
         )
 
         print(f"Running: {run_name}")
-        # main(model_args, data_args, training_args)
+        train_model(model_args, data_args, training_args)
