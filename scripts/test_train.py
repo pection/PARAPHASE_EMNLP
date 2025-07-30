@@ -245,12 +245,51 @@ class TrainingArguments(HFTrainingArguments):
     )
 @dataclass
 class DataTrainingArguments:
-    task_name: Optional[str] = field(default=None)
-    version_name: Optional[str] = field(default=None)
-    n_shots: Optional[int] = field(default=0)
-    fewshot_eval_size: Optional[int] = field(default=100)
-    io_format: Optional[str] = field(default=None)
-    explanation_sep: Optional[str] = field(default=" because ")
+    """
+    Arguments pertaining to what data we are going to input our model for training and eval.
+    """
+
+    task_name: str = field(metadata={"help": "The name of the task to train on."})
+    early_stopping_patience: int = field(
+        default=10
+    )
+    overwrite_cache: bool = field(
+        default=False
+    )
+    train_predict: bool = field(
+        default=False
+    )
+    test_predict: bool = field(
+        default=False
+    )
+    dev_predict: bool = field(
+        default=False
+    )
+    version_name: str = field(
+        default="v1.11", metadata={"help": "Version of CoS-E to load"}
+    )
+    generations_filepath: str = field(
+        default=None
+    )
+    n_shots: int = field(
+        default=None
+    )
+    fewshot_eval_size: float = field(
+        default=350
+    )
+    io_format: str = field(
+        default='standard'
+    )
+    explanation_sep: str = field(
+        default='explanation'
+    )
+    data_path: str = field(
+        default=None,
+        metadata={"help": "path to sbic or senmaking folder"}
+    )
+    gpt3_max_eval_size: int = field(
+        default=None
+    )
     data_path: Optional[str] = field(default=None)
 
 def train_model(model_args, data_args, training_args):
