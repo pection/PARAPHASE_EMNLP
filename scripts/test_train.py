@@ -33,7 +33,6 @@ InputDataClass = NewType("InputDataClass", Any)
 from itertools import product
 from transformers import HfArgumentParser
 from custom_args import ModelArguments, DataTrainingArguments
-from transformers import TrainingArguments
 from datetime import datetime
 import os
 import matplotlib.pyplot as plt
@@ -265,7 +264,7 @@ def train_model(model_args, data_args, training_args):
     print(f"unused_args = {unused_args}")
     print("*********************************")
 
-
+    data_args.dev_predict = True
     if data_args.generations_filepath is not None:
         training_args.do_train = False
         training_args.do_eval = False
@@ -816,7 +815,6 @@ def train_model(model_args, data_args, training_args):
 
 if __name__ == "__main__":
 
-
     seeds = [9599]
     task = "esnli"
     model_name = "t5-base"
@@ -825,6 +823,10 @@ if __name__ == "__main__":
     explanation_sep = " because "
     project = "PARAPHASE_SPLINT"
     exp_name = "Lora_POC"
+    warmup_step =0
+    learning_rate_variable = 3e-5
+    max_step = 10
+    eval_steps = 5
     for seed in seeds:
         run_name = f"{task}-{seed}-{model_name}-1-300-2-0-3e-05-2-30-350-{explanation_sep.strip()}-{model_name.replace('/','')}{io_format}-{n_shots}".replace(" ", "")
         output_dir = os.path.join(exp_name, run_name)
@@ -860,10 +862,10 @@ if __name__ == "__main__":
             per_device_train_batch_size=1,
             per_device_eval_batch_size=1,
             gradient_accumulation_steps=8,
-            learning_rate=3e-5,
-            warmup_steps=0,
-            max_steps=300,
-            eval_steps=30,
+            learning_rate=learning_rate_variable,
+            warmup_steps=warmup_step,
+            max_steps=max_step,
+            eval_steps=eval_steps,
             logging_steps=1,
             logging_first_step=True,
             save_total_limit=1,
