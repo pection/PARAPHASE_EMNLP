@@ -36,7 +36,7 @@ import torch.nn.functional as F
 
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from transformers.modeling_outputs import Seq2SeqLMOutput
-from custom_loss_class import T5WithCustomLoss,SPLINT_T5
+from custom_loss_class import SPLINT_T5
 from transformers import TrainingArguments as HFTrainingArguments
 from dataclasses import dataclass, field
 InputDataClass = NewType("InputDataClass", Any)
@@ -802,8 +802,6 @@ def main(model_args, data_args, training_args):
                     writer.write("%s = %s\n" % (key, str(results[key])))
 
     predict_time = time.time() - start_time
-    logger.info("Git branch: %s" % git_branch)
-    logger.info("Git hash: %s" % git_hash)
     logger.info("Save path: %s" % training_args.output_dir)
     if training_args.do_train:
         logger.info("total train time: %.4f hours" % (train_time / 60.0 / 60.0))
