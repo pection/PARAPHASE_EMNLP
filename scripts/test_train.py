@@ -13,16 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-Fine-tuning the library models for language modeling on a text file (GPT, GPT-2, BERT, RoBERTa).
-GPT and GPT-2 are fine-tuned using a causal language modeling (CLM) loss while BERT and RoBERTa are fine-tuned
-using a masked language modeling (MLM) loss.
-
-Fine-tunes the model to jointly produce labels + rationales.
-Modified from (transformers version 2.9.1):
-https://github.com/huggingface/transformers/blob/master/examples/language-modeling/run_language_modeling.py
-"""
-
 # This code is based on https://github.com/allenai/label_rationale_association/blob/main/input_to_label_and_rationale.py
 
 import logging
@@ -76,7 +66,6 @@ from custom_args import (
 from metrics_custom_loss import evaluate
 import torch
 import datasets
-import git
 import time
 from datetime import datetime
 import sys
@@ -332,11 +321,6 @@ def main(model_args, data_args, training_args):
     )
     logger.info("Save path: %s" % training_args.output_dir)
 
-    repo = git.Repo(search_parent_directories=True)
-    git_hash = repo.head.object.hexsha
-    git_branch = repo.active_branch.name
-    logger.info("Git branch: %s" % git_branch)
-    logger.info("Git hash: %s" % git_hash)
 
     # model_class = "llama"
     model_class = model_args.model_class
@@ -345,8 +329,7 @@ def main(model_args, data_args, training_args):
         with open(
                 os.path.join(training_args.output_dir, "commandline_args.txt"), "w"
         ) as f:
-            f.write("Git branch: " + git_branch + "\n")
-            f.write("Git hash: " + git_hash + "\n")
+
             f.write("Command:\n")
             f.write("\n".join(sys.argv[1:]))
 
