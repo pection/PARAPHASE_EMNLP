@@ -251,8 +251,13 @@ def train_model(model_args, data_args, training_args):
     parser = HfArgumentParser(
         (ModelArguments, DataTrainingArguments, TrainingArguments)
     )
-
-    model_args, data_args, training_args, unused_args = parser.parse_args_into_dataclasses(return_remaining_strings=True)
+    if model_args is None or data_args is None or training_args is None:
+        parser = HfArgumentParser((ModelArguments, DataTrainingArguments, TrainingArguments))
+        model_args, data_args, training_args = parser.parse_args_into_dataclasses()
+        unused_args = []
+    else:
+        unused_args = []
+    # model_args, data_args, training_args, unused_args = parser.parse_args_into_dataclasses(return_remaining_strings=True)
     print("*********************************")
     print(f"model_args = {model_args}")
     print(f"data_args = { data_args}")
