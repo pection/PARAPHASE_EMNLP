@@ -75,12 +75,12 @@ import pandas as pd
 import jsonlines
 from copy import deepcopy
 from typing import List, Dict
-# from accelerate import Accelerator
+from accelerate import Accelerator
 
 logger = logging.getLogger(__name__)
 transformers.logging.set_verbosity_info()
 import re
-# from accelerate import FullyShardedDataParallelPlugin
+from accelerate import FullyShardedDataParallelPlugin
 from torch.distributed.fsdp.fully_sharded_data_parallel import FullOptimStateDictConfig, FullStateDictConfig
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
@@ -245,7 +245,7 @@ class TrainingArguments(HFTrainingArguments):
     )
 def train_model(model_args, data_args, training_args):
 
-    # accelerator = Accelerator()
+    accelerator = Accelerator()
     og_start_time = time.time()
 
     parser = HfArgumentParser(
@@ -671,12 +671,11 @@ def train_model(model_args, data_args, training_args):
         start_time = time.time()
         train_time = time.time() - start_time
 
-    # if trainer.is_fsdp_enabled:
-    #     trainer.accelerator.state.fsdp_plugin.set_state_dict_type("FULL_STATE_DICT")
-    #     unwrap_model = accelerator.unwrap_model(model)
-    # else:
-    #     unwrap_model = accelerator.unwrap_model(model)
-    unwrap_model = model  # or just remove the block entirely if not needed
+    if trainer.is_fsdp_enabled:
+        trainer.accelerator.state.fsdp_plugin.set_state_dict_type("FULL_STATE_DICT")
+        unwrap_model = accelerator.unwrap_model(model)
+    else:
+        unwrap_model = accelerator.unwrap_model(model)
 
     results = {}
     if training_args.do_eval:
@@ -857,8 +856,8 @@ if __name__ == "__main__":
             save_total_limit=1,
             save_strategy="steps",
             lr_scheduler_type="constant",
-            bf16=False,
-            bf16_full_eval=False,
+            bf16=True,
+            bf16_full_eval=True,
             save_weight=False,
             report_to=["all"]
         )
