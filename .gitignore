@@ -1,0 +1,5 @@
+gradio/.gradio/cached_examples/17/log.csv
+**__pycache__
+csv/*
+**/.ipynb_checkpoints/
+**/txt/
