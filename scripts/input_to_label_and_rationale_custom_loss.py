@@ -37,7 +37,7 @@ import torch.nn.functional as F
 
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from transformers.modeling_outputs import Seq2SeqLMOutput
-from custom_loss_class import T5WithCustomLoss,SILAFIT_T5
+from custom_loss_class import SPLINT_T5
 from transformers import TrainingArguments as HFTrainingArguments
 from dataclasses import dataclass, field
 InputDataClass = NewType("InputDataClass", Any)
@@ -404,7 +404,7 @@ def main():
 
                     tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-large")
                     # model = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-large")
-                    model = SILAFIT_T5.from_pretrained("google/flan-t5-large")
+                    model = SPLINT_T5.from_pretrained("google/flan-t5-large")
                     # model = T5WithCrossEntropyLoss.from_pretrained("google/flan-t5-large")
                 else:
                     model = model_name.from_pretrained(model_args.pretrained_model_file)

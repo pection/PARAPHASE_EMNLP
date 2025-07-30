@@ -778,10 +778,19 @@ def train_model(model_args, data_args, training_args):
             "eval_results_lm.txt",
         )
     # if data_args.generations_filepath or trainer.is_world_process_zero():
+
+
+    if data_args.generations_filepath is None:
+        output_eval_file = os.path.join(training_args.output_dir, "eval_results_lm.txt")
+    else:
+        output_eval_file = os.path.join(
+            os.path.dirname(os.path.dirname(data_args.generations_filepath)),
+            "eval_results_lm.txt",
+        )
     print(f"KEYS = = == =")
     for key in results.keys():
         print(key)
-    if True:
+    if data_args.generations_filepath or trainer.is_world_process_zero():
         with open(output_eval_file, "a+") as writer:
             for key in results.keys():
                 if results[key] is not None:
