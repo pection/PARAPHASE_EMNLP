@@ -734,6 +734,8 @@ def train_model(model_args, data_args, training_args):
     # `data_args.test_predict` is NOT used for experiments in the paper
     if data_args.test_predict and data_args.task_name in {"esnli", "sbic"}:
         logger.info("*** Predict on test set***")
+        print(f"************************ MODEL WILL EVALUATE TEST ************************")
+
         results = evaluate(
                             save_path,
                             original_data_splits['test'],
@@ -753,7 +755,7 @@ def train_model(model_args, data_args, training_args):
             assert "validation" in data_args.generations_filepath
         if model_args.pretrained_model_file and not training_args.do_train:
             save_path = model_args.pretrained_model_file
-
+        print(f"************************ MODEL WILL EVALUATE VALIDATION ************************")
         results = evaluate(
                             save_path,
                             original_data_splits["validation"],
@@ -823,7 +825,7 @@ if __name__ == "__main__":
     explanation_sep = " because "
     project = "PARAPHASE_SPLINT"
     exp_name = "Lora_POC"
-    warmup_step =0
+    warmup_step = 0
     learning_rate_variable = 3e-5
     max_step = 10
     eval_steps = 5
