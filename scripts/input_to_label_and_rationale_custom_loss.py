@@ -88,7 +88,6 @@ import re
 from accelerate import FullyShardedDataParallelPlugin
 from torch.distributed.fsdp.fully_sharded_data_parallel import FullOptimStateDictConfig, FullStateDictConfig
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-from pytorch_toolbelt.losses import CrossEntropyFocalLoss
 
 import json
 
