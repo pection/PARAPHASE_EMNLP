@@ -808,7 +808,7 @@ def train_model(model_args, data_args, training_args):
 if __name__ == "__main__":
 
 
-    seeds = [9599, 1181, 5320, 588, 4791]
+    seeds = [9599]
     task = "esnli"
     model_name = "t5-base"
     io_format = "unifiedqa_snli_mix_what_with_choices_v2"
