@@ -244,7 +244,7 @@ class TrainingArguments(HFTrainingArguments):
         metadata={"help": "Save model weights after training"}
     )
 @dataclass
-class DataTrainingArguments:
+class DataTrainingArguments(HfArgumentParser):
     data_path: Optional[str] = field(default=None)  
 
 def train_model(model_args, data_args, training_args):
