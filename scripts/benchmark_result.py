@@ -95,7 +95,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--exp_root", type=str, help="path to a directory where checkpoints will be saved")
-    parser.add_argument("--output", type=str, help="path to a directory where checkpoints will be saved")
+    parser.add_argument("--output", type=str, help="path to a directory where output will be saved")
 
     args = parser.parse_args()
     collect_results(args)
