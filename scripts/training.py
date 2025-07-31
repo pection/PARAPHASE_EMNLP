@@ -686,8 +686,7 @@ def train_model(model_args, data_args, training_args):
         )
     
         
-    # Training. Don't train if it is use_gpt3
-    if training_args.do_train and not model_args.use_gpt3:
+    if training_args.do_train:
         start_time = time.time()
         trainer.train()
         train_time = time.time() - start_time
@@ -764,8 +763,6 @@ def train_model(model_args, data_args, training_args):
         save_path = os.path.dirname(data_args.generations_filepath)
 
     start_time = time.time()
-    # Storing predictions & computing BLEUscore. Don't predict on the training set if `use_gpt3`
-    # `data_args.train_predict` is NOT used for experiments in the paper
     if data_args.train_predict :
         logger.info("*** Predict on train set***")
         if data_args.generations_filepath is not None:
