@@ -626,10 +626,7 @@ def train_model(model_args, data_args, training_args):
         #         param.requires_grad = False
 
 
-        trainable = [name for name, param in model.named_parameters() if param.requires_grad]
-        print("Trainable parameters:")
-        for name in trainable:
-            print(name)
+
 
 
         # for name, param in model.named_parameters():
@@ -657,6 +654,12 @@ def train_model(model_args, data_args, training_args):
             lora_dropout=0.1
         )
         model = get_peft_model(model, peft_config)
+
+        trainable = [name for name, param in model.named_parameters() if param.requires_grad]
+        print("Trainable parameters:")
+        for name in trainable:
+            print(name)
+
 
         training_args.bf16=True
         training_args.bf16_full_eval=True
@@ -827,7 +830,6 @@ def train_model(model_args, data_args, training_args):
             os.path.dirname(os.path.dirname(data_args.generations_filepath)),
             "eval_results_lm.txt",
         )
-    # if data_args.generations_filepath or trainer.is_world_process_zero():
 
 
     if data_args.generations_filepath is None:
@@ -837,7 +839,6 @@ def train_model(model_args, data_args, training_args):
             os.path.dirname(os.path.dirname(data_args.generations_filepath)),
             "eval_results_lm.txt",
         )
-    print(f"KEYS = = == =")
     for key in results.keys():
         print(key)
     if data_args.generations_filepath or trainer.is_world_process_zero():
@@ -866,15 +867,14 @@ def train_model(model_args, data_args, training_args):
 
 
 if __name__ == "__main__":
-    project = "PARAPHASE_SPLINT"
-    exp_name = "Lora_POC"
-    seeds = [9599]
+    exp_name = "SPLINT_LORA"
+    seeds = [7004, 3639, 6290, 9428, 7056, 4864, 4273, 7632, 2689, 8219, 4523, 2175, 7356, 8975, 51, 4199, 4182, 1331, 2796, 6341, 7009, 1111, 1967, 1319, 741, 7740, 1335, 9991, 6924, 6595, 5358, 2638, 6227, 8384, 2769, 9933, 6339, 3112, 1349, 8483, 2348, 834, 6895, 4823, 2913, 9962, 178, 2147, 8160, 1936, 4512, 2051, 4779, 2498, 176, 9599, 1181, 5320, 588, 4791]
     model_name = "t5-base"
     explanation_sep = " because "
-    warmup_step = 0
+    warmup_step = 5000
     learning_rate_variable = 3e-5
-    max_step = 10
-    eval_steps = 5
+    max_step = 300
+    eval_steps = 10
     fewshot_eval_size = 350
     num_train_epochs = 2
     per_device_train_batch_size = 1
